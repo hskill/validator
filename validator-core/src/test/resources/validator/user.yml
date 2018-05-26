@@ -1,0 +1,18 @@
+edit:
+  - name: id
+    rules:
+      required: {}
+      max: 16
+  - name: loginName
+    rules:
+      size: 16
+
+
+create:
+  - name: id
+    rules:
+      required:
+        message: hello, world
+      max:
+        value: 18
+        message: hey, dude

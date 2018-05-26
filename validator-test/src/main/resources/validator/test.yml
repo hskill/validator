@@ -1,0 +1,17 @@
+view:
+  - name: id
+    type: path
+    rules:
+      notNull: ~
+      min:
+        value: 10
+        message: 不能小于10
+      between:
+        min: 10
+        max: 20
+        message: 不能小于10，且不能大于20
+      size:
+        min: 10
+        max: 20
+        message: 长度为10
+      cellPhone: ~

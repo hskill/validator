@@ -1,0 +1,82 @@
+group 'info.ideatower.springboot'
+version '0.1.0-SNAPSHOT'
+
+apply from: 'codecheck.gradle'
+
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven'
+    apply plugin: 'idea'
+
+    sourceCompatibility = 1.8
+
+    //解决乱码
+    [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+    // 注意定义 maven 仓库的地址
+    repositories {
+        maven { url "http://maven.aliyun.com/nexus/content/groups/public" }
+        mavenCentral()
+    }
+    //日志
+    configurations.all {
+        exclude module: "logback-classic"
+        exclude module: 'spring-boot-starter-logging'
+    }
+
+
+    // 使用idea模块修改编译输出位置和Gradle一样
+    idea {
+        module {
+            inheritOutputDirs = false
+            outputDir = file("$buildDir/classes/main/")
+            testOutputDir = file("$buildDir/classes/test/")
+        }
+    }
+
+    dependencies {
+
+        compile 'com.alibaba:fastjson:1.2.30+'
+
+        compile 'commons-beanutils:commons-beanutils:1.9.1'
+        compile 'commons-io:commons-io:2.4'
+
+        compile 'javax.servlet:javax.servlet-api:3.1.0'
+
+
+        compile 'org.apache.commons:commons-email:1.4'
+        compile 'org.apache.commons:commons-lang3:3.3.2'
+
+        // logging
+        compile 'org.slf4j:jcl-over-slf4j:1.7.7'
+        compile 'org.slf4j:jul-to-slf4j:1.7.7'
+        compile 'org.slf4j:slf4j-api:1.7.7'
+        compile 'org.slf4j:slf4j-log4j12:1.7.7'
+
+        compile 'org.springframework:spring-beans:4.3.6.RELEASE'
+        compile 'org.springframework:spring-context-support:4.3.6.RELEASE'
+        compile 'org.springframework:spring-core:4.3.6.RELEASE'
+        compile 'org.springframework:spring-tx:4.3.6.RELEASE'
+        compile 'org.springframework:spring-web:4.3.6.RELEASE'
+        compile 'org.springframework:spring-webmvc:4.3.6.RELEASE'
+
+        compile 'com.darwinsys:hirondelle-date4j:1.5.1'
+
+        // yaml 解析
+        compile 'org.yaml:snakeyaml:1.17'
+
+        // apache commons 加密库
+        compile 'commons-codec:commons-codec:1.9'
+
+        // lombok
+        compile "org.projectlombok:lombok:1.16.18"
+
+        compile 'org.jglue.fluent-json:fluent-json:2.0.0';// json builder
+
+        // 测试
+        testCompile 'junit:junit:4.11+'
+        testCompile 'org.assertj:assertj-core:3.6.2+'
+        testCompile 'org.springframework:spring-test:4.3.6.RELEASE'
+
+    }
+}

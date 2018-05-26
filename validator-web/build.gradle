@@ -1,0 +1,50 @@
+group 'info.ideatower.springboot'
+version '0.1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'maven'
+
+sourceCompatibility = 1.8
+
+//解决乱码
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+// 注意定义 maven 仓库的地址
+repositories {
+    maven { url "http://maven.aliyun.com/nexus/content/groups/public" }
+    mavenCentral()
+}
+
+//日志
+configurations.all {
+    exclude module: "logback-classic"
+    exclude module: 'spring-boot-starter-logging'
+}
+
+dependencies {
+
+    //    compile 'org.springframework:spring-aop:4.3.6.RELEASE'
+    compile 'org.springframework:spring-beans:4.3.6.RELEASE'
+    compile 'org.springframework:spring-context-support:4.3.6.RELEASE'
+//    compile 'org.springframework:spring-context:4.3.6.RELEASE'
+    compile 'org.springframework:spring-core:4.3.6.RELEASE'
+//    compile 'org.springframework:spring-jdbc:4.3.6.RELEASE'
+//    compile 'org.springframework:spring-oxm:4.3.6.RELEASE'
+    compile 'org.springframework:spring-tx:4.3.6.RELEASE'
+    compile 'org.springframework:spring-web:4.3.6.RELEASE'
+    compile 'org.springframework:spring-webmvc:4.3.6.RELEASE'
+
+    // ideatower 基础库
+//    compile 'info.ideatower.infra:support:0.1.2-SNAPSHOT'
+
+    // lombok
+    compile "org.projectlombok:lombok:1.16.18"
+
+    compile project(":validator-core")
+
+    // 测试
+    testCompile 'junit:junit:4.11+'
+    testCompile 'org.assertj:assertj-core:3.6.2+'
+    testCompile 'org.springframework:spring-test:4.3.6.RELEASE'
+
+}
