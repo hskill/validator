@@ -1,2 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-info.ideatower.springboot.validator.web.ValidatorAutoConfiguration

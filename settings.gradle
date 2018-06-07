@@ -3,4 +3,5 @@ rootProject.name = 'validator'
 include 'validator-core'
 include 'validator-web'
 include 'validator-test'
+include 'validator-boot-starter-web'
 

@@ -7,7 +7,7 @@ import java.text.MessageFormat;
 public class JsonResult {
 
     public static String to(String code, String message, Object target) {
-        return String.format("{\"code\": \"%s\", \"message\": \"%s\", \"data\": \"%s\"}",
+        return String.format("{\"code\": \"%s\", \"message\": \"%s\", \"data\": %s}",
                 code,
                 message,
                 JSON.toJSONString(target));
