@@ -3,7 +3,6 @@ package info.ideatower.springboot.validator.core.rule.extend;
 import info.ideatower.springboot.validator.core.ValidatorContext;
 import info.ideatower.springboot.validator.core.result.ValidatorResult;
 import info.ideatower.springboot.validator.core.rule.AbstractRule;
-import info.ideatower.springboot.validator.core.rule.Converter;
 import lombok.Data;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -26,7 +25,7 @@ import java.text.MessageFormat;
 @Data
 public class Max extends AbstractRule {
 
-    private String value;
+    private Double value = Double.MAX_VALUE;
 
     public void setValue(String value) {
         if (!NumberUtils.isNumber(value)) {
@@ -48,9 +47,7 @@ public class Max extends AbstractRule {
             return false;
         }
 
-        Double v = NumberUtils.createDouble(this.value);
-
-        if (t >= v) {
+        if (t >= this.value) {
             String objectName = context.getCurrentField().getName();
             reject(errors, objectName, "{0} 的数字值 {1} 超过 {2}", objectName, target, this.value);
             return false;

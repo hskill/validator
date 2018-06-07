@@ -25,13 +25,7 @@ import java.text.MessageFormat;
 @Data
 public class Min extends AbstractRule {
 
-    private String value;
-
-    public void setValue(String value) {
-        if (!NumberUtils.isNumber(value)) {
-            throw new IllegalArgumentException(MessageFormat.format("Max的参数值[{0}]不是数字", value));
-        }
-    }
+    private Double value = Double.MIN_VALUE;
 
     @Override
     public boolean isValid(ValidatorContext context, Object target, ValidatorResult errors) {
@@ -47,8 +41,7 @@ public class Min extends AbstractRule {
             return false;
         }
 
-        Double v = NumberUtils.createDouble(this.value);
-        if (t <= v) {
+        if (t <= this.value) {
             String objectName = context.getCurrentField().getName();
             reject(errors, objectName, "{0} 的数字值 {1} 小于 {2}", objectName, target, this.value);
             return false;
