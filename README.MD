@@ -6,7 +6,7 @@
 
 ## 应用场景
 
-信息系统的在Web层的输入校验，检验数据的完整、一致性、业务性。
+信息系统的在Web层进行输入的参数校验，检验数据的完整、一致性。
 
 ## 配置文件
 
@@ -18,39 +18,60 @@
 
 ## 使用
 
-以 `mark` 为识别主体
+校验规则的配置文件内容，以 `mark` 为识别主体
 
 ```yaml
 # user.yml
-# mark => 'user.edit' 注意mark是一个组合参数，使用了文件名与文件中的标记
-edit:
-  -  type: query
-     name: id
-     rules:
-       notNull: ~
-       max:
-         value: 1000
-         message: error message
+# mark => 'user.view' 注意mark是一个组合参数，使用了文件名与文件中的标记
+view:
+  id:
+    type: path
+    notNull: ~
+    min: 10
+    between:
+      min: 10
+      max: 20
+    size:
+      min: 10
+      max: 20
+    cellPhone: ~
+  name:
+    info.ideatower.springboot.validator.test.Test: ~
 ```
 
+### （1）说明
+
+**（1）参数名称**
+
+在mark下面，直接编写参数名称
+
+**（2）type**
+
 其中，type可以验证以下部分
+
 * query get/ form post 参数 默认
 * header
 * session
 * cookie
 * path springmvc中的path参数
 
-
 通过 `SpringBoot` 的 `AutoConfiguration` 进行处理
 
-### (1) 返回`user.yml`中`edit`的验证规则（json）
-GET `/validator/rule/user/edit`
+**（3）校验规则**
 
+在参数名称下，直接编写检验规则
 
+###  （2）返回`user.yml`中`edit`的校验规则（json）
 
-### (2) 验证结果处理 — 显式控制
+通过 GET 访问 `/validator/rule/{filename}/{mark}`
 
-**ValidatorResult**
+例如：GET `/validator/rule/user/view`
+
+## 校验结果
+
+### （1）验证结果处理 — 显式控制
+
+使用 `ValidatorResult` 参数注解，进行校验结果的注入。
 
 ```java
 public class UserController {
@@ -74,9 +95,9 @@ public class UserController {
 
 
 
-## 自动处理并返回结果
+###（2）自动处理并返回结果
 
-可以自动处理并返回json，或view的视图结果
+使用 `JsonValidatorResult` 方法注解，自动处理并返回json，或view的视图结果。
 
 ```java
 @PostMapping("/edit/{id}")
@@ -120,16 +141,20 @@ public class SimpleJsonResultHandler implements JsonResultHandler {
 
 ## （一）gradle中加入依赖
 
-需要先加入maven repo，==暂无==
+需要先加入maven repo，在 repositories 中加入
+
+```
+maven { url "http://maven.aliyun.com/nexus/contenthouse/groups/public" }
+```
 
 
 
 然后加入依赖
 
 
-```
+```gradle
 dependencies {
-    compile 'info.ideatower.springboot:validator-web:0.1.0-SNAPSHOT' //
+    compile 'info.ideatower.springboot:validator-boot-starter-web:0.1.0-SNAPSHOT'
 }
 ```
 
@@ -145,33 +170,28 @@ dependencies {
 
 ```yaml
 # 唯一的名称（mark）
-# mark ==> 'user.login' 注意，mark：文件名 + login
+# mark ==> 'user.login' 注意，mark：文件名.login
 login:
-  # 验证参数列表
-  -
     # 表单的参数名称
-	name: loginName
-	# 规则列表
-	rules:
-	  # 参数必须存在
-	  notNull: ~
-	  # 长度必须在6到12之间
-	  size:
-	    min: 6
-	    max: 12
-      # 还可以加上message，如果不加则使用默认message
-      message: 长度不对
-    - name: password
-      rules:
+    loginName:
+        # 规则列表
+        # 参数必须存在
+        notNull: ~
+        # 长度必须在6到12之间
+        size:
+            min: 6
+            max: 12
+        # 还可以加上message，如果不加则使用默认message
+        message: 长度不对
+    password:
         notNull: ~
         size:
-          min: 6
-          max: 12
-    - name: captchaCode
-      rules:
+        min: 6
+        max: 12
+    captchaCode:
         # 注意没有required的情况，required不存在时，其它规则不验证
         # 固定长度
-        size: 4
+    	size: 4
 ```
 
 
@@ -223,7 +243,7 @@ public class LoginController {
 
 
 
-```
+```java
 package foo.bar;
 
 public class OtherRule implements Rule {
@@ -246,8 +266,7 @@ user.yml
 
 ```yaml
 edit:
-    - name: id
-      rules:
+    id:
         foo.bar.OtherRule:
             v: 1
 ```
