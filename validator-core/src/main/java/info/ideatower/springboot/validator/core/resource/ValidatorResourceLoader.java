@@ -122,24 +122,35 @@ public class ValidatorResourceLoader {
 
         for (Map.Entry<String, Object> validation : yamlObject.entrySet()) {
 
-            String validationMark = validation.getKey();
+            String mark = validation.getKey();
 
-            if (validation.getValue() instanceof List) {
-                val itemList = (List<Map<String, Object>>) validation.getValue();
+            if (validation.getValue() instanceof Map) {
+                val itemMap = (Map<String, Object>) validation.getValue();
 
-                for (val item : itemList) {
+                for (val item : itemMap.entrySet()) {
 
-                    ValidatorField field = new ValidatorField();
-                    field.setName(String.valueOf(item.get("name")));
-                    field.setType(String.valueOf(item.getOrDefault("type", DEFAULT_ITEM_TYPE)));
+                    if (item.getValue() instanceof Map) {
 
-                    for (Map.Entry<String, Object> rulesMap : ((Map<String, Object>) item.getOrDefault("rules", Collections.EMPTY_MAP)).entrySet()) {
-                        Rule rule = this.ruleFactory.getByName(rulesMap.getKey(), rulesMap.getValue());
-                        field.addRule(rule);
+                        Map<String, Object> rules = (Map<String, Object>) item.getValue();
+
+                        ValidatorField field = new ValidatorField();
+                        field.setName(item.getKey());
+
+                        // rules 中如果有type，则标明参数所属的类型
+                        field.setType(String.valueOf(rules.getOrDefault("type", DEFAULT_ITEM_TYPE)));
+                        // 删除type，方便接下来进行遍历
+                        rules.remove("type");
+
+
+
+                        for (Map.Entry<String, Object> rule : rules.entrySet()) {
+                            Rule r = this.ruleFactory.getByName(rule.getKey(), rule.getValue());
+                            field.addRule(r);
+                        }
+
+                        // 加入resource
+                        resource.put(MessageFormat.format("{0}.{1}", prefix, mark), field);
                     }
-
-                    // 加入resource
-                    resource.put(MessageFormat.format("{0}.{1}", prefix, validationMark), field);
                 }
             }
         }
