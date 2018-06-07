@@ -1,4 +1,4 @@
-group 'info.ideatower.infra'
+group 'info.ideatower.springboot'
 version '0.1.0-SNAPSHOT'
 
 
@@ -60,7 +60,7 @@ dependencies {
     // lombok
     compile "org.projectlombok:lombok:1.16.18"
 
-    compile project(":validator-web")
+    compile project(":validator-boot-starter-web")
 
     // 测试
     testCompile 'junit:junit:4.11+'
